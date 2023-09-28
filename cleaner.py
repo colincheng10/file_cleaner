@@ -93,7 +93,7 @@ def main(argv):
                 break
             else:
                 continue
-                print (f" mismatch: {aline['md5']} and {bline['md5']}")
+                #print (f" mismatch: {aline['md5']} and {bline['md5']}")
 
     # confirm to delete
     choice = input ("confirm to delete: [y|n]")
