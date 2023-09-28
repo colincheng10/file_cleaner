@@ -11,9 +11,9 @@ def get_md5(filename):
     
     mfile = open(filename, "rb")
 
-    if s > 100*1000*1000:
-        print ("file > 100MB: ", s)
-        m.update(mfile.read(100*1000*1000))
+    if s > 20*1000*1000:
+        print ("file > 20MB: ", s)
+        m.update(mfile.read(20*1000*1000))
     else:
         # print ("file size = ", s)
         m.update(mfile.read())
@@ -22,7 +22,7 @@ def get_md5(filename):
 
     md5_value = m.hexdigest()
     
-    return md5_value
+    return md5_value,s
 
 def get_urllist(dirname):
     urlList=[]
@@ -63,15 +63,26 @@ def main(argv):
 
     print ("procsss: ", baseDir)
     baseList = get_urllist(baseDir)
+    total = len(baseList)
+    print ("total: ", total)
 
     # csv line: dirpath/filename, md5
     print ("write: ", outFile)
-    with open(outFile, 'w', newline='') as outF: 
+    with open(outFile, 'w', newline='', encoding = 'utf-8') as outF: 
         outWriter = csv.writer(outF)
 
+        index = 0
+        count = total / 100
+        percent = 0
+        
         for a in baseList: 
-            md5 = get_md5(a)
-            outWriter.writerow([a, md5])
+            md5,size = get_md5(a)
+            outWriter.writerow([a, md5, size])
+            index += 1
+            if index >= count:
+                percent += 1
+                index = 0
+                print ('- %d %%' %(percent))
 
 if __name__ == '__main__':
     main(sys.argv[1:])

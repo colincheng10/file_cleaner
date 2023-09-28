@@ -58,17 +58,17 @@ def main(argv):
     ignoList = skip_urllist("ignore.cfg")
     print ("ignore:", ignoList)
 
-    # csv line: dirpath/filename, md5
-    fieldnames = ['url', 'md5']
+    # csv line: dirpath/filename, md5, size
+    fieldnames = ['url', 'md5', 'size']
 
-    with open(baseFile, 'r') as baseF: 
+    with open(baseFile, 'r', encoding = 'utf-8') as baseF: 
         baseReader = csv.DictReader(baseF, fieldnames)
         baseList = [ row for row in baseReader]
         #print (baseList)
         #for line in baseReader:
         #    print (f" md5 of {line['url']} is {line['md5']}")
 
-    with open(extrFile, 'r') as extrF:
+    with open(extrFile, 'r', encoding = 'utf-8') as extrF:
         extrReader = csv.DictReader(extrF, fieldnames)
         extrList = [ row for row in extrReader]
         #print (extrList)
@@ -87,13 +87,13 @@ def main(argv):
             continue
 
         for bline in baseList:
-            if aline['md5'] == bline['md5'] and aline['url'] != bline['url']:
+            if aline['md5'] == bline['md5'] and aline['size'] == bline['size'] and aline['url'] != bline['url']:
                 print (f" md5 match: {aline['md5']} : [1] {aline['url']}, [2] {bline['url']}")
                 delList.append(aline['url'])
                 break
             else:
                 continue
-                #print (f" mismatch: {aline['md5']} and {bline['md5']}")
+                print (f" mismatch: {aline['md5']} and {bline['md5']}")
 
     # confirm to delete
     choice = input ("confirm to delete: [y|n]")
@@ -101,7 +101,11 @@ def main(argv):
         for url in delList:
             if os.path.exists(url):
                 print (f" delete:", url)
-                os.remove(url)
+                try:
+                    os.remove(url)
+                except Exception as e:
+                    print ("Error:", e)
+                    continue
             else:
                 print(" The file does not exist: ", url)
     elif choice == 'n' :

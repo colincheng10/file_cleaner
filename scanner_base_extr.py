@@ -11,9 +11,9 @@ def get_md5(filename):
     
     mfile = open(filename, "rb")
 
-    if s > 100*1000*1000:
-        print ("file > 100MB: ", s)
-        m.update(mfile.read(100*1000*1000))
+    if s > 20*1000*1000:
+        print ("file > 20MB: ", s)
+        m.update(mfile.read(20*1000*1000))
     else:
         # print ("file size = ", s)
         m.update(mfile.read())
@@ -22,7 +22,7 @@ def get_md5(filename):
 
     md5_value = m.hexdigest()
     
-    return md5_value
+    return md5_value,s
 
 def get_urllist(dirname):
     urlList=[]
@@ -69,20 +69,20 @@ def main(argv):
 
     # csv line: dirpath/filename, md5
     print ("procsss: ", baseDir)
-    with open(baseFile, 'w', newline='') as baseF: 
+    with open(baseFile, 'w', newline='', encoding = 'utf-8') as baseF: 
         baseWriter = csv.writer(baseF)
 
         for a in baseList: 
-            md5 = get_md5(a)
-            baseWriter.writerow([a, md5])
+            md5,size = get_md5(a)
+            baseWriter.writerow([a, md5, size])
 
     print ("procsss: ", extrDir)
-    with open(extrFile, 'w', newline='') as extrF:
+    with open(extrFile, 'w', newline='', encoding = 'utf-8') as extrF:
         extrWriter = csv.writer(extrF)
         
         for b in extrList:
-            md5 = get_md5(b)
-            extrWriter.writerow([b, md5])
+            md5,size = get_md5(b)
+            extrWriter.writerow([b, md5, size])
 
 if __name__ == '__main__':
     main(sys.argv[1:])
