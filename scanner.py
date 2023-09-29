@@ -79,7 +79,7 @@ def main(argv):
             md5,size = get_md5(a)
             outWriter.writerow([a, md5, size])
             index += 1
-            if index >= count:
+            if count >= 1 and index >= count:
                 percent += 1
                 index = 0
                 print ('- %d %%' %(percent))
